@@ -15,6 +15,12 @@
                     <div style="width:420px; margin:auto;">
                         <label for="gameKey">Enter Game Key:</label>
                         <input type="text" name="gameKey">
+                        <br/>
+                        <br/>
+                        <label for="playerName">Nickname:</label>
+                        <input type="text" name="playerName">
+                        <br/>
+                        <br/>
                         <input class="btn btn-primary" type="submit" value="Join Game" name="joinGame">
                     </div>
                 </form>

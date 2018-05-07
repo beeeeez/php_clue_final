@@ -18,7 +18,13 @@
                 <form method="get" action="waiting.php">
                     <div style="width:420px; margin:auto;">
                         <label for="playerNumb">Number of players:</label>
-                        <input type="text" name="playerNumb">                
+                        <input type="text" name="playerNumb">
+                        <br/>
+                        <br/>
+                        <label for="playerName">Nickname:</label>
+                        <input type="text" name="playerName">
+                        <br/>
+                        <br/>
                         <input class="btn btn-primary" type="submit" name="createGame" value="Create Game">
                         <input type="hidden" value="<?php echo $tempKey ?>" name="gameKey">
                     </div>
