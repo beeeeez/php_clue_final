@@ -4,7 +4,7 @@
         <title></title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="main.css">
-        <meta http-equiv="refresh" content="15"/>
+        <meta http-equiv="refresh" content="5"/>
         <!-- Refreshes page every 15 seconds ^^^^ -->
     </head>
     <body>
@@ -16,92 +16,80 @@
                 session_start();
                 include_once 'dbconnect.php';
 
-                if (isset($_GET['createGame']) || isset($_GET['joinGame'])) {
-                    $gameKey = $_GET['gameKey'];
-                    $expectedPlyrs = $_GET['playerNumb'];
+                if (isset($_POST['createGame']) || isset($_POST['joinGame'])) {
+                    $_SESSION['gameKey'] = $_POST['gameKey'];
+                    $_SESSION['playerName'] = $_POST['playerName'];
+                    $expectedPlyrs = $_POST['playerNumb'];
                     $result = "";
                     $db = getDatabase();
                     $stmt = $db->prepare("SELECT playercount FROM player_assignment WHERE gamekey = $gamekey");
-
                     if ($stmt->execute()) {
                         $result = $stmt->fetch(PDO::FETCH_ASSOC);
                     }
                     while ($result < $expectedPlyrs) {
-                        if (!empty($_GET['createGame'])) {
-                            $playerNumb = $_GET['playerNumb'];
-                            $playerName = $_GET['playerName'];
+                        if (!empty($_POST['createGame'])) {
+                            $playerNumb = $_POST['playerNumb'];
+                            $playerName = $_POST['playerName'];
                             $db = getDatabase();
-                            $stmt1 = $db->prepare("INSERT INTO main(gamekey, playerCount, turnNumb) VALUES ('$gameKey', '$playerNumb', '0')");
-                            $stmt2 = $db->prepare("INSERT INTO player_assignment(gamekey, Scarlet, Mustard, White, Green, Peacock, Plum) VALUES ('$gameKey' , '$playerName', ' ' , ' ', ' ', ' ', ' ',)");
-
-                            if ($stmt1->execute()) {
-                                if ($stmt2->execute()) {
-                                    //then set this persons position to the first spot
-                                    //and make it so if that first spot is taken then
-                                    //take the second spot, if thats taken take next available spot
-                                    //and so on. 
+                            //this needs to be changed now that tables were reconfigured
+                            $stmt1 = $db->prepare("INSERT INTO main(gamekey, playerCount, turnNumb) VALUES ('$gameKey', '$playerNumb', '0')");                            
+                            $stmt2 = $db->prepare("INSERT INTO player_assignment(gamekey, Scarlet, Mustard, White, Green, Peacock, Plum) VALUES ('$gameKey' , '$playerName', ' ' , ' ', ' ', ' ', ' ')");
+                            //----------------------------------------------------------------
+                            $bool = false;
+                            if ($stmt1->execute() > 0) {
+                                $bool = true;
+                                if ($bool === true && $stmt2->execute() > 0) {
+                                    $bool = true;
                                 }
                             }
                             ?>
                             <div style="width:170px; margin:auto;">
                                 <?php
                                 echo 'Game Key: ' . $gameKey;
-                            } elseif (!empty($_GET['joinGame'])) {
-                                $playerName = $_GET['playerName'];
+                            } elseif (!empty($_POST['joinGame'])) {
+                                include 'characterform.php';
+                                $playerName = $_POST['playerName'];
                                 $results = array();
                                 $db = getDatabase();
-                                $stmt = $db->prepare("SELECT * FROM player_assignment WHERE gamekey = $gameKey");
 
-                                if ($stmt->execute()) {
-                                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                    foreach ($results as $x) {
-                                        $Mustard = $x['Mustard'];
-                                        $White = $x['White'];
-                                        $Green = $x['Green'];
-                                        $Peacock = $x['Peacock'];
-                                        $Plum = $x['Plum'];
+                                if (isset($_POST['chooseChar'])) {
+                                        $character = filter_input(INPUT_POST, 'characterName');
+                                        if ($character === 'Mustard') {
+                                            $stmt = $db->prepare("INSERT INTO player_assignment(Mustard) VALUE ('$playerName')");
+                                            if ($stmt->execute() > 0) {
+                                                echo "<div style='width:200px; margin:auto;'>You chose Mustard</div>";
+                                            }
+                                        } elseif ($character === 'White') {
+                                            $stmt = $db->prepare("INSERT INTO player_assignment(White) VALUE ('$playerName')");
+                                            if ($stmt->execute() > 0) {
+                                                echo "<div style='width:200px; margin:auto;'>You chose White</div>";
+                                            }
+                                        } elseif ($character === 'Green') {
+                                            $stmt = $db->prepare("INSERT INTO player_assignment(Green) VALUE ('$playerName')");
+                                            if ($stmt->execute() > 0) {
+                                                echo "<div style='width:200px; margin:auto;'>You chose Green</div>";
+                                            }
+                                        } elseif ($character === 'Peacock') {
+                                            $stmt = $db->prepare("INSERT INTO player_assignment(Peacock) VALUE ('$playerName')");
+                                            if ($stmt->execute() > 0) {
+                                                echo "<div style='width:200px; margin:auto;'>You chose Peacock</div>";
+                                            }
+                                        } elseif ($character === 'Plum') {
+                                            $stmt = $db->prepare("INSERT INTO player_assignment(Plum) VALUE ('$playerName')");
+                                            if ($stmt->execute() > 0) {
+                                                echo "<div style='width:200px; margin:auto;'>You chose Plum</div>";
+                                            }
+                                        }
                                     }
-                                    if ($Mustard === ' ') {
-                                        ?>
-                                        <div style="width:200px; margin:auto">Your Character is Mr.Mustard</div>
-                                        <?php
-                                        $stmt = $db->prepare("INSERT INTO player_assignment(Mustard, playercount) VALUE ('$playerName', '2')");
-                                        $stmt->execute();
-                                    } elseif ($White === ' ') {
-                                        ?>
-                                        <div style="width:200px; margin:auto">Your Character is Mr.White</div>
-                                        <?php
-                                        $stmt = $db->prepare("INSERT INTO player_assignment(White, playercount) VALUE ('$playerName', '3')");
-                                        $stmt->execute();
-                                    } elseif ($Green === ' ') {
-                                        ?>
-                                        <div style="width:200px; margin:auto">Your Character is Mr.Green</div>
-                                        <?php
-                                        $stmt = $db->prepare("INSERT INTO player_assignment(Green, playercount) VALUE ('$playerName', '4')");
-                                        $stmt->execute();
-                                    } elseif ($Peacock === ' ') {
-                                        ?>
-                                        <div style="width:200px; margin:auto">Your Character is Mr.Peacock</div>
-                                        <?php
-                                        $stmt = $db->prepare("INSERT INTO player_assignment(Peacock, playercount) VALUE ('$playerName', '5')");
-                                        $stmt->execute();
-                                    } elseif ($Plum === ' ') {
-                                        ?>
-                                        <div style="width:200px; margin:auto">Your Character is Mr.Plum</div>
-                                        <?php
-                                        $stmt = $db->prepare("INSERT INTO player_assignment(Plum, playercount) VALUE ('$playerName', '6')");
-                                        $stmt->execute();
-                                    }
+                                    ?>
+                                    <div style="width:200px; margin:auto;">
+                                        <?php echo "Successfully joined game"; ?>
+                                    </div>
+                                    <?php
                                 }
-                                //$stmt1 = $db->prepare("WHERE gamekey = $gameKey INSERT INTO player_assignment(gamekey, playerCount, turnNumb) VALUES ('$gameKey', '$playerNumb', '0')");
-                                ?>
-                                <div style="width:200px; margin:auto;">
-                                    <?php echo "Successfully joined game"; ?>
-                                </div>
-                                <?php
                             }
-                        }
                         if ($result === $expectedPlyrs) {
+                            //if the players expected is hit then the gameboard will get initialized
                             header("Location: gameboard.php");
                         }
                         ?>

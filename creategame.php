@@ -15,13 +15,13 @@
                 <a style="width:79px; margin: 5px 0px 0px 5px; margin-top:15px;" class="btn btn-warning" href="index.php">Go back</a>
                 <br/>
                 <br/>
-                <form method="get" action="waiting.php">
+                <form method="POST" action="waiting.php">
                     <div style="width:420px; margin:auto;">
-                        <label for="playerNumb">Number of players:</label>
+                        <label for="playerNumb">Number of players: (3-6)</label>
                         <input type="text" name="playerNumb">
                         <br/>
                         <br/>
-                        <label for="playerName">Nickname:</label>
+                        <label for="playerName">Name:</label>
                         <input type="text" name="playerName">
                         <br/>
                         <br/>
