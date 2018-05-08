@@ -1,0 +1,21 @@
+Tables
+
+GameTable
+
+GameSolution
+
+CardTable
+
+CardTypesTables(1-Suspect, 2-Weapon, 3-Place)
+
+PlayerTable
+
+
+Select * from Table where  ISNULL(ColumnName, '') = ''
+
+Select c.CardName from cards c
+LEFT JOIN player p on c.cardID = p.CharacterId
+WHERE c.CardTypeId = 1 AND p.CharacterId is NULL
+Select Count(*) from Player where GameId = 1
+
+Select Location from Player WHERE GameKey = '1' AND CharacterId = 'White'
