@@ -16,96 +16,124 @@
                 session_start();
                 include_once 'dbconnect.php';
 
+
+
                 if (isset($_POST['createGame']) || isset($_POST['joinGame'])) {
-                    $_SESSION['gameKey'] = $_POST['gameKey'];
-                    $_SESSION['playerName'] = $_POST['playerName'];
-                    $expectedPlyrs = $_POST['playerNumb'];
-                    $result = "";
-                    $db = getDatabase();
-                    $stmt = $db->prepare("SELECT playercount FROM player_assignment WHERE gamekey = $gamekey");
-                    if ($stmt->execute()) {
-                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $stmt = $db->prepare("SELECT * FROM `player` where coalesce(PlayerName) is not null ");
+                    if ($stmt->execute() > 0) {
+                        $currentPlyrs = $stmt->fetch(PDO::FETCH_ASSOC);
                     }
-                    while ($result < $expectedPlyrs) {
-                        if (!empty($_POST['createGame'])) {
-                            $playerNumb = $_POST['playerNumb'];
-                            $playerName = $_POST['playerName'];
-                            $db = getDatabase();
-                            //this needs to be changed now that tables were reconfigured
-                            $stmt1 = $db->prepare("INSERT INTO main(gamekey, playerCount, turnNumb) VALUES ('$gameKey', '$playerNumb', '0')");                            
-                            $stmt2 = $db->prepare("INSERT INTO player_assignment(gamekey, Scarlet, Mustard, White, Green, Peacock, Plum) VALUES ('$gameKey' , '$playerName', ' ' , ' ', ' ', ' ', ' ')");
-                            //----------------------------------------------------------------
-                            $bool = false;
-                            if ($stmt1->execute() > 0) {
-                                $bool = true;
-                                if ($bool === true && $stmt2->execute() > 0) {
-                                    $bool = true;
+                    $_SESSION['ownerName'] = $_POST['playerNameC'];
+                    if (!empty($_POST['createGame'])) {
+                        $gameKey = $_POST['gameKey'];
+                        $ownerName = $_POST['playerNameC'];
+                        $expectedPlyrs = $_POST['playerNumb'];
+                        $db = getDatabase();
+                        include_once 'creatorcharacterform.php';
+                        $character = $_POST['characterName'];
+                        if ($character === "Scarlet") {
+                            $charcterID = 1;
+                        } elseif ($character === "Plum") {
+                            $charcterID = 2;
+                        } elseif ($character === "Peacock") {
+                            $charcterID = 3;
+                        } elseif ($character === "Green") {
+                            $charcterID = 4;
+                        } elseif ($character === "Mustard") {
+                            $charcterID = 5;
+                        } elseif ($character === "White") {
+                            $charcterID = 6;
+                        }
+                        $stmt1 = $db->prepare("INSERT INTO game(GameKey, GameName, GameOwner, NumberOfPlayers) VALUES ('$gameKey', 'Test', '$ownerName, '$expectedPlyrs')");
+                        $stmt2 = $db->prepare("INSERT INTO player(GameKey, CharacterId, PlayerName) VALUES('$gameKey', '$charcterID', '$ownerName')");
+                        $stmt3 = $db->prepare("SELECT PlayerId FROM player WHERE GameKey = $gameKey");
+                        $stmt4 = $db->prepare("SELECT * FROM `player` where coalesce(PlayerName) is not null ");
+                        
+                        if ($stmt1->execute() > 0) {
+                            if ($stmt2->execute() > 0) {
+                                if ($stmt3->execute() > 0) {
+                                    $playerID = $stmt3->fetch(PDO::FETCH_ASSOC);
+                                    if ($stmt4->execute() > 0) {
+                                        $numberOfPlayers = $stmt4->fetch(PDO::FETCH_ASSOC);
+                                        $stmt5 = $db->prepare("INSERT INTO characters(PlayerID) VALUES('$playerID') WHERE CharcterID = $charcterID");
+                                    }
                                 }
+                            }
+                        }
+                        if ($stmt5->execute() > 0) {
+                            ?>
+                            <div style="width:170px; margin:auto;">
+                                <?php
+                                echo 'Successfully Chose ' . $character;
                             }
                             ?>
                             <div style="width:170px; margin:auto;">
                                 <?php
                                 echo 'Game Key: ' . $gameKey;
-                            } elseif (!empty($_POST['joinGame'])) {
-                                include 'characterform.php';
-                                $playerName = $_POST['playerName'];
-                                $results = array();
-                                $db = getDatabase();
-
-                                if (isset($_POST['chooseChar'])) {
-                                        $character = filter_input(INPUT_POST, 'characterName');
-                                        if ($character === 'Mustard') {
-                                            $stmt = $db->prepare("INSERT INTO player_assignment(Mustard) VALUE ('$playerName')");
-                                            if ($stmt->execute() > 0) {
-                                                echo "<div style='width:200px; margin:auto;'>You chose Mustard</div>";
-                                            }
-                                        } elseif ($character === 'White') {
-                                            $stmt = $db->prepare("INSERT INTO player_assignment(White) VALUE ('$playerName')");
-                                            if ($stmt->execute() > 0) {
-                                                echo "<div style='width:200px; margin:auto;'>You chose White</div>";
-                                            }
-                                        } elseif ($character === 'Green') {
-                                            $stmt = $db->prepare("INSERT INTO player_assignment(Green) VALUE ('$playerName')");
-                                            if ($stmt->execute() > 0) {
-                                                echo "<div style='width:200px; margin:auto;'>You chose Green</div>";
-                                            }
-                                        } elseif ($character === 'Peacock') {
-                                            $stmt = $db->prepare("INSERT INTO player_assignment(Peacock) VALUE ('$playerName')");
-                                            if ($stmt->execute() > 0) {
-                                                echo "<div style='width:200px; margin:auto;'>You chose Peacock</div>";
-                                            }
-                                        } elseif ($character === 'Plum') {
-                                            $stmt = $db->prepare("INSERT INTO player_assignment(Plum) VALUE ('$playerName')");
-                                            if ($stmt->execute() > 0) {
-                                                echo "<div style='width:200px; margin:auto;'>You chose Plum</div>";
-                                            }
-                                        }
+                            }
+                            while (count($numberOfPlayers) < $expectedPlyrs) {
+                                if (!empty($_POST['joinGame'])) {
+                                    include_once 'joinercharacterform.php';
+                                    $joinCharacterName = $_POST['characterNameJ'];
+                                    if ($joinCharacterName === "Scarlet") {
+                                        $characterID = 1;
+                                    } elseif ($joinCharacterName === "Plum") {
+                                        $characterID = 2;
+                                    } elseif ($joinCharacterName === "Peacock") {
+                                        $characterID = 3;
+                                    } elseif ($joinCharacterName === "Green") {
+                                        $characterID = 4;
+                                    } elseif ($joinCharacterName === "Mustard") {
+                                        $characterID = 5;
+                                    } elseif ($joinCharacterName === "White") {
+                                        $characterID = 6;
                                     }
+                                    $joinKey = $_POST['gameKeyJ'];
+                                    $joinPlayerName = $_POST['playerNameJ'];
+                                    $db = getDatabase();
+                                    $stmt1 = $db->prepare("INSERT INTO player(GameKey, CharacterId, PlayerName) VALUES('$joinKey', '$characterID', '$joinPlayerName')");
+                                    $stmt2 = $db->prepare("SELECT PlayerId FROM player WHERE GameKey = $gameKey");
+                                    $stmt3 = $db->prepare("INSERT INTO characters(PlayerID) VALUES($playerID) WHERE CharcterID = $characterID");
                                     ?>
                                     <div style="width:200px; margin:auto;">
                                         <?php echo "Successfully joined game"; ?>
                                     </div>
                                     <?php
+                                    if ($stmt1->execute() > 0) {
+                                        if ($stmt2->execute() > 0) {
+                                            if ($stmt3->execute() > 0) {
+                                                ?>
+                                                <div style="width:170px; margin:auto;">
+                                                    <?php
+                                                    echo 'Successfully Chose ' . $joinCharacterName;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    $stmt = $db->prepare("SELECT * FROM `player` where coalesce(PlayerName) is not null ");
+                                    if ($stmt->execute() > 0) {
+                                        $currentPlyrs = $stmt->fetch(PDO::FETCH_ASSOC);
+                                    }
+                                    if ($currentPlyrs === $expectedPlyrs) {
+                                        //if the players expected is hit
+                                        //this is where we innitialize the game
+                                        header("Location: gameboard.php");
+                                    }
                                 }
-                            }
-                        if ($result === $expectedPlyrs) {
-                            //if the players expected is hit then the gameboard will get initialized
-                            header("Location: gameboard.php");
+                                ?>
+                            </div>
+                            <?php
+                        } else {
+                            echo "Please Join or Create a Game.";
+                            sleep(10);
+                            header("Location: index.php");
                         }
                         ?>
-                    </div>
-                    <?php
-                } else {
-                    echo "Please Join or Create a Game.";
-                    sleep(10);
-                    header("Location: index.php");
-                }
-                ?>
 
-                <a href="gameboard.php">HARD LINK TO GAME BOARD</a>
-            </div>
-        </div>
-    </div><!-- End of "wrapper div -->
+                        <a href="gameboard.php">HARD LINK TO GAME BOARD</a>
+                    </div>
+                </div>
+            </div><!-- End of "wrapper div -->
 
 </html>
 

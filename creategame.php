@@ -22,7 +22,7 @@
                         <br/>
                         <br/>
                         <label for="playerName">Name:</label>
-                        <input type="text" name="playerName">
+                        <input type="text" name="playerNameC">
                         <br/>
                         <br/>
                         <input class="btn btn-primary" type="submit" name="createGame" value="Create Game">

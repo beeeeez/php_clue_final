@@ -11,16 +11,16 @@
                 <a style="width:79px; margin: 5px 0px 0px 5px; margin-top:15px;" class="btn btn-warning" href="index.php">Go back</a>
                 <br/>
                 <br/>
-                <form method="POST" action="waiting.php">
+                <form method="POST" action="characterform.php">
                     <div style="width:420px; margin:auto;">
                         <label for="gameKey">Enter Game Key:</label>
-                        <input type="text" name="gameKey">
+                        <input type="text" name="gameKeyJ">
                         <br/>
                         <br/>
                         <label for="playerName">Name:</label>
-                        <input type="text" name="playerName">
+                        <input type="text" name="playerNameJ">
                         <br/>
-                        <br/>
+                        <br/>                       
                         <input class="btn btn-primary" type="submit" value="Join Game" name="joinGame">
                     </div>
                 </form>
