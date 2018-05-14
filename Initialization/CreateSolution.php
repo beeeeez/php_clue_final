@@ -3,6 +3,8 @@
 include_once './ConnectDB.php';
 
 //Generate Solution
+//$gameKey = "1";
+$gameKey = $_SESSION["gameKey"];
 $murder = "";
 $murderWeapon = "";
 $murderLocation = "";
@@ -89,7 +91,7 @@ catch(PDOException $e)
                 // set the PDO error mode to exception
                 //$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 //echo "Connected successfully"; 
-                $stmt = $conn->prepare("INSERT INTO `gamesolution`(`GameKey`, `MurdererId`, `MurderWeaponId`, `MurderLocationId`) VALUES ('2','$murder','$murderWeapon', '$murderLocation')");
+                $stmt = $conn->prepare("INSERT INTO `gamesolution`(`GameKey`, `MurdererId`, `MurderWeaponId`, `MurderLocationId`) VALUES ('$gameKey','$murder','$murderWeapon', '$murderLocation')");
                 //print_r($db);
                 //print_r($stmt);
                 $stmt->execute();
