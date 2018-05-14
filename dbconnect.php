@@ -1,7 +1,7 @@
 <?php
 
 function getDatabase() {
-        $dbname = "test";
+        $dbname = "se266_joel";
         $username = "root";
         $pwd = ""; // your student id WITHOUT the zeroes
 
