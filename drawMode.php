@@ -128,7 +128,7 @@ function doorwayCheck()
     {
         $room = "billiard";
     }
-    else if ($_POST['updateX'] == 18 && $_POST['updateY'] == 10)
+    else if ($_POST['updateX'] == 18 && $_POST['updateY'] == 9)
     {
         $room = "dining";
     }
@@ -437,8 +437,8 @@ function validMove()
             $xCoord = $x['xCoord'];
             $yCoord = $x['YCoord'];
         }
-
-        $check = roomSlotCheck($xCoord, $yCoord);
+        $room = roomCheck($xCoord, $yCoord);
+        $check = roomSlotCheck($xCoord, $yCoord, $room);
 
 
 
@@ -711,6 +711,35 @@ function validMoveRoom($room){
             echo 'formStudy1.submit();';
             echo '};';
             echo '</script>';
+            
+            //secret pass
+            echo "<style>";
+            echo "#x1-y4{background-color:green;}";
+            echo "</style>";
+            echo '<form action="#" method="POST" id="updateStudyPass">';
+            echo '<input type="hidden" value="';
+            echo "20";
+            echo '" name="updateX">';
+            echo '<input type="hidden" value="';
+            echo $_POST['dice1'];
+            echo '" name="dice1">';
+            echo '<input type="hidden" value="';
+            echo $_POST['dice2'];
+            echo '" name="dice2">';
+            echo '<input type="hidden" value="';
+            echo "18";
+            echo '" name="updateY">';
+            echo '<input type="hidden" value="true" name="secretPass">';
+            echo '</form>';
+            echo "<script>";
+            echo 'let clickEventStudyPass = document.getElementById("x';
+            echo "1-y4";
+            echo '");';
+            echo 'let formStudyPass = document.getElementById("updateStudyPass");';
+            echo 'clickEventStudyPass.onclick = function() {';
+            echo 'formStudyPass.submit();';
+            echo '};';
+            echo '</script>';
     }
     
     if($room == "hall"){
@@ -881,6 +910,34 @@ function validMoveRoom($room){
             echo 'formLounge1.submit();';
             echo '};';
              echo "</script>";
+              //secret pass
+            echo "<style>";
+            echo "#x24-y6{background-color:green;}";
+            echo "</style>";
+            echo '<form action="#" method="POST" id="updateLoungePass">';
+            echo '<input type="hidden" value="';
+            echo "6";
+            echo '" name="updateX">';
+            echo '<input type="hidden" value="';
+            echo $_POST['dice1'];
+            echo '" name="dice1">';
+            echo '<input type="hidden" value="';
+            echo $_POST['dice2'];
+            echo '" name="dice2">';
+            echo '<input type="hidden" value="';
+            echo "20";
+            echo '" name="updateY">';
+            echo '<input type="hidden" value="true" name="secretPass">';
+            echo '</form>';
+            echo "<script>";
+            echo 'let clickEventLoungePass = document.getElementById("x';
+            echo "24-y6";
+            echo '");';
+            echo 'let formLoungePass = document.getElementById("updateLoungePass");';
+            echo 'clickEventLoungePass.onclick = function() {';
+            echo 'formLoungePass.submit();';
+            echo '};';
+            echo '</script>';
      }
     
     
@@ -1027,6 +1084,35 @@ function validMoveRoom($room){
             echo 'formKitchen1.submit();';
             echo '};';
              echo "</script>";
+             
+             //secret pass
+            echo "<style>";
+            echo "#x19-y24{background-color:green;}";
+            echo "</style>";
+            echo '<form action="#" method="POST" id="updateKitchenPass">';
+            echo '<input type="hidden" value="';
+            echo "7";
+            echo '" name="updateX">';
+            echo '<input type="hidden" value="';
+            echo $_POST['dice1'];
+            echo '" name="dice1">';
+            echo '<input type="hidden" value="';
+            echo $_POST['dice2'];
+            echo '" name="dice2">';
+            echo '<input type="hidden" value="';
+            echo "5";
+            echo '" name="updateY">';
+            echo '<input type="hidden" value="true" name="secretPass">';
+            echo '</form>';
+            echo "<script>";
+            echo 'let clickEventKitchenPass = document.getElementById("x';
+            echo "19-y24";
+            echo '");';
+            echo 'let formKitchenPass = document.getElementById("updateKitchenPass");';
+            echo 'clickEventKitchenPass.onclick = function() {';
+            echo 'formKitchenPass.submit();';
+            echo '};';
+            echo '</script>';
      }
      
      else if ($room == "conservatory"){
@@ -1056,6 +1142,35 @@ function validMoveRoom($room){
             echo 'formConservatory1.submit();';
             echo '};';
              echo "</script>";
+             
+             //secret pass
+            echo "<style>";
+            echo "#x2-y20{background-color:green;}";
+            echo "</style>";
+            echo '<form action="#" method="POST" id="updateConservatoryPass">';
+            echo '<input type="hidden" value="';
+            echo "18";
+            echo '" name="updateX">';
+            echo '<input type="hidden" value="';
+            echo $_POST['dice1'];
+            echo '" name="dice1">';
+            echo '<input type="hidden" value="';
+            echo $_POST['dice2'];
+            echo '" name="dice2">';
+            echo '<input type="hidden" value="';
+            echo "7";
+            echo '" name="updateY">';
+            echo '<input type="hidden" value="true" name="secretPass">';
+            echo '</form>';
+            echo "<script>";
+            echo 'let clickEventConservatoryPass = document.getElementById("x';
+            echo "2-y20";
+            echo '");';
+            echo 'let formConservatoryPass = document.getElementById("updateConservatoryPass");';
+            echo 'clickEventConservatoryPass.onclick = function() {';
+            echo 'formConservatoryPass.submit();';
+            echo '};';
+            echo '</script>';
      }
      
      

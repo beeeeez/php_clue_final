@@ -76,6 +76,7 @@
 
             <div class="board-wrapper">
                 <?php
+                session_start();
                 $_SESSION["gameKey"] = 66;
                 $_SESSION["PlayerID"] = 6;
                 $_SESSION['mode'] = "move";
@@ -99,6 +100,9 @@
             <div id="modeDraw">
                 <?php
                 findState();
+                if(isset($_SESSION['prevRoom'])){
+                    print_r($_SESSION['prevRoom']);
+                }
                 ?>
             </div>
 
