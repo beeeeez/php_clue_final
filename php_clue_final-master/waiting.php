@@ -15,11 +15,6 @@
                 <?php
                 session_start();
                 include_once 'dbconnect.php';
-                //$db = getDatabase();
-                //$stmt = $db->prepare("SELECT * FROM `player` where coalesce(PlayerName) is not null ");
-                //if ($stmt->execute() > 0) {
-                //    $currentPlyrs = count($stmt->fetchAll(PDO::FETCH_ASSOC));
-                //}
                 if (filter_input(INPUT_POST, 'action') === 'create') {
                     $gameKey = $_POST['gameKey'];
                     $_SESSION['gameKey'] = $_POST['gameKey'];
@@ -124,16 +119,11 @@
                             }
                         }
                     }
-
-
-                    //echo "<div style='width:200px; margin:auto;'>Please Join or Create a Game.</div>";
-                    //sleep(10);
-                    //header("Location: index.php");
                 }
                 $db = getDatabase();
                 $stmt = $db->prepare("SELECT COUNT(*) FROM `player` WHERE COALESCE(PlayerName) is not null and GameKey = $joinKey");
                 if ($stmt->execute() > 0) {
-                    $stmt2 = $db->prepare("SELECT NumberOfPlayers from game WHERE GameKey = $joinKey");
+                    $stmt2 = $db->prepare("SELECT NumberOfPlayers FROM game WHERE GameKey = $joinKey");
                     if ($stmt2->execute() > 0) {
                         $currentResults = $stmt->fetch(PDO::FETCH_ASSOC);
                         $expectedResults = $stmt2->fetchAll(PDO::FETCH_ASSOC);
@@ -148,6 +138,8 @@
                 }
                 if ($currentPlyrs === $expectedPlyrs) {
                     $_SESSION['mode'] = "wait";
+                    //take the creator id and make it the turn id in the turn table
+                    //-----------------------------------
                     //if the players expected is hit
                     //this is where we innitialize the game
                     include_once 'Initialization/Initalization.php';
