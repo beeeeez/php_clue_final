@@ -25,11 +25,7 @@
                             <?php
                             include_once 'dbconnect.php';
                             $db = getDatabase();
-                            $gameKey = $_POST['gameKeyJ'];
-                            $stmt = $db->prepare("SELECT CharacterColor FROM `characters` WHERE PlayerID IS NULL AND gameKey = :gameKey");
-                            $binds = array(
-                                ":gameKey" => $firstname
-                            );
+                            $stmt = $db->prepare("SELECT CharacterColor FROM `characters` WHERE PlayerID IS NULL OR PlayerID = ''");
                             $availCharacters = array();
                             if ($stmt->execute() > 0) {
                                 $availCharacters = $stmt->fetchAll(PDO::FETCH_ASSOC);

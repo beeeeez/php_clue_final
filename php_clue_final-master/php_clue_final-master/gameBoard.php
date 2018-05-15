@@ -4,8 +4,6 @@
     <head>
         <meta charset="UTF-8">
         <title></title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
         <style>
             body {
                 background-image: url('cluepic1.jpg');
@@ -16,10 +14,9 @@
                 border-style:solid;
                 border-width:1px;
                 border-color:black;
-                background-color:bisque;
             }
             .grid:hover{
-                border-color:white;     
+                background-color:black;                  
             }
             .row{
                 height:25px;
@@ -55,7 +52,7 @@
                 border-width:1px;
                 border-color:black;
             }
-            #modeDraw{
+            .hand{
                 width:500px;
                 height:150px;
                 float:left;
@@ -63,9 +60,17 @@
                 border-style:solid;
                 border-width:1px;
                 border-color:black;
-                text-align:center;
             }
-
+            .suggestion{
+                height:150px;
+                float:left;
+                margin:3%;                   
+                border-style:solid;
+                border-width:1px;
+                border-color:black;
+                text-align:center;
+                padding:1%;
+            }
 
         </style>
     </head>
@@ -76,37 +81,43 @@
 
             <div class="board-wrapper">
                 <?php
-                session_start();
-                $_SESSION["gameKey"] = 66;
-                $_SESSION["PlayerID"] = 6;
-                $_SESSION['mode'] = "move";
-
-                include 'stateFinder.php';
-                include 'drawRooms.php';
-                include 'dbconnect.php';
-                movementCheck();
+                include 'drawrooms.php';
                 drawGrid();
                 drawRooms();
-                drawBlack();
-                drawCharacters();
-
-
-                //findState();
                 //drawRooms();
                 //drawBlack();
                 ?></div>
-            <div class="custom"></div>
-
-            <div id="modeDraw">
-                <?php
-                findState();
-                if(isset($_SESSION['prevRoom'])){
-                    print_r($_SESSION['prevRoom']);
-                }
-                ?>
+            <div class="chat">
+                <p>The chatlog goes here!</p>
+            </div>
+            <div class="dice-rolls">
+                <img src="dice/1.png" />  <img src="dice/1.png" /> 
+            </div><br />
+            <div class="hand">
+                <p>Your hand goes here!</p>
             </div>
 
-            <div class="hand">
+            <div class="suggestion"><h3>Suggestion : </h3>
+                <form>
+                    <label>Suspect : </label>
+                    <select name="suspect">
+                        <option value="Ms. Scarlet">Ms. Scarlet</option>
+                        <option value="Mrs. White">Mrs. White</option>
+                        <option value="Prof. Plum">Prof. Plum</option>
+                    </select>
+                    <label>Weapon : </label>
+                    <select name="weapon">
+                        <option value="Knife">Knife</option>
+                        <option value="Rope">Rope</option>
+                        <option value="Revolver">Revolver</option>
+                    </select>
+                    <label>Location : </label>
+                    <select name="location">
+                        <option value="Study">Study</option>
+                        <option value="Billiard Room">Billiard Room</option>
+                        <option value="Conservatory">Conservatory</option>
+                    </select>
+
             </div>
         </div>
     </body>
