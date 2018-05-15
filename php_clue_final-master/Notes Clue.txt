@@ -1,0 +1,5 @@
+- Matt is done creating the game solution
+
+- Not done creating the player hand 
+
+- We should turn the player hand and the game solution into cookie variables
