@@ -4,7 +4,7 @@
         <title></title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="main.css">
-        <meta http-equiv="refresh" content="5"/>
+        <meta http-equiv="refresh" content=""/>
         <!-- Refreshes page every 15 seconds ^^^^ -->
     </head>
     <body>
@@ -15,52 +15,61 @@
                 <?php
                 session_start();
                 include_once 'dbconnect.php';
-                $db = getDatabase();
-                $stmt = $db->prepare("SELECT * FROM `player` where coalesce(PlayerName) is not null ");
-                if ($stmt->execute() > 0) {
-                    $currentPlyrs = count($stmt->fetchAll(PDO::FETCH_ASSOC));
-                }
                 if (filter_input(INPUT_POST, 'action') === 'create') {
-                    //Collect all from players where playername is not empty
-                    //Then count the number of rows and that is amount of current player in session
-                    //---------------------------------------------------------
-                    //--------------------------------------------------------
-                    //if create game form was submitted                    
-                    $gameKey = $_POST['gameKey'];
-                    $ownerName = $_POST['playerNameC'];
-                    $_SESSION['expectedPlyrs'] = $_POST['playerNumb'];
+                    // SESSION variable for game key and owner name
+                    $_SESSION['gameKey'] = $_POST['gameKey'];
+                    $_SESSION['ownerName'] = $_POST['playerNameC'];
+                    $expectedPlyrs = $_POST['playerNumb'];
                     $db = getDatabase();
                     $character = $_POST['characterName'];
+                    
+                    //Initializing the character table for the current session
+                    //--------------------------------------------------------
+                    $stmt = $db->prepare("INSERT INTO characters(CharacterID, CardID, CharacterColor, xCoord, YCoord, gameKey) VALUES (1, 1, 'Scarlet', 17, 1, '{$_SESSION['gameKey']}'), (2, 2, 'Plum', 1, 6, '{$_SESSION['gameKey']}'), (3, 3, 'Peacock', 1, 19, '{$_SESSION['gameKey']}'), (4, 4, 'Green', 10, 25, '{$_SESSION['gameKey']}'), (5, 5, 'Mustard', 24, 8, '{$_SESSION['gameKey']}'), (6, 6, 'White', 15, 25, '{$_SESSION['gameKey']}')");
+                    if ($stmt->execute() > 0) {
+                        echo 'success';
+                        echo '<br/>';
+                    } else {
+                        echo'broken';
+                    }
+                    //---------------------------------------------------------
+                    
                     //giving a characterID value to the chosen character by game creator
                     if ($character === "Scarlet") {
-                        $charcterID = 1;
+                        $characterID = 1;
                     } elseif ($character === "Plum") {
-                        $charcterID = 2;
+                        $characterID = 2;
                     } elseif ($character === "Peacock") {
-                        $charcterID = 3;
+                        $characterID = 3;
                     } elseif ($character === "Green") {
-                        $charcterID = 4;
+                        $characterID = 4;
                     } elseif ($character === "Mustard") {
-                        $charcterID = 5;
+                        $characterID = 5;
                     } elseif ($character === "White") {
-                        $charcterID = 6;
+                        $characterID = 6;
                     }
-                    //SQL statements to create current game session
-                    //---------------------------------------------
-                    $stmt1 = $db->prepare("INSERT INTO game(GameKey, GameName, GameOwner, NumberOfPlayers) VALUES ('$gameKey', 'Test', '$ownerName', '$expectedPlyrs')");
-                    $stmt2 = $db->prepare("INSERT INTO player(GameKey, CharacterId, PlayerName) VALUES('$gameKey', '$charcterID', '$ownerName')");
-                    $stmt3 = $db->prepare("SELECT PlayerId FROM player WHERE PlayerName = '$ownerName'");
-                    //---------------------------------------------
+                    //echo '<br/>';
+                    //echo '<br/> These are for the 2nd statement' . $gameKey . $characterID . $ownerName;
+                    //SQL statements to continue to create current game session
+                    //-------------------------------------------------
+                    $stmt1 = $db->prepare("INSERT INTO game(GameKey, GameName, GameOwner, NumberOfPlayers) VALUES ('{$_SESSION['gameKey']}', 'Test', '{$_SESSION['ownerName']}', '$expectedPlyrs')");
+                    $stmt2 = $db->prepare("INSERT INTO player(GameKey, CharacterId, PlayerName) VALUES('{$_SESSION['gameKey']}', '$characterID', '{$_SESSION['ownerName']}')");
+                    $stmt3 = $db->prepare("SELECT PlayerId FROM player WHERE PlayerName = '{$_SESSION['ownerName']}'");
+                    //-------------------------------------------------
 
                     if ($stmt1->execute() > 0) {
                         if ($stmt2->execute() > 0) {
                             $result = array();
                             if ($stmt3->execute() > 0) {
                                 $result = $stmt3->fetchAll(PDO::FETCH_ASSOC);
-                                foreach ($result as $x):
-                                    $playerID = $x['PlayerId'];
-                                endforeach;
-                                $stmt4 = $db->prepare("UPDATE characters SET PlayerID = $playerID WHERE CharacterID = $charcterID");
+                                foreach ($result as $x){
+                                    //Assigning the player id of the creator to a 
+                                    //SESSION variable
+                                    //------------------------------------
+                                    $_SESSION['playerID'] = $x['PlayerId'];
+                                    //------------------------------------
+                                }
+                                $stmt4 = $db->prepare("UPDATE characters SET PlayerID = '{$_SESSION['playerID']}' WHERE CharacterID = $characterID");
                             } else {
                                 echo"Statement 3 of create game did not execute";
                             }
@@ -70,15 +79,13 @@
                     } else {
                         echo"Statement 1 of create game did not execute";
                     }
-                    if ($stmt4->execute() > 0) {
-                        ?>
+                    if ($stmt4->execute() > 0) {?>
                         <div style="width:170px; margin:auto;"><?php echo 'Successfully Chose ' . $character; ?></div>
                         <?php
                     } else {
                         echo"Statement 4 of create game did not execute";
-                    }
-                    ?>
-                    <div style="width:170px; margin:auto;"><?php echo 'Game Key: ' . $gameKey; ?></div>
+                    }?>
+                    <div style="width:170px; margin:auto;"><?php echo 'Game Key: ' . $_SESSION['gameKey']; ?></div>
                     <?php
                 } elseif (filter_input(INPUT_POST, 'action') === 'join') {
                     //if join game form was submitted
@@ -97,18 +104,33 @@
                     } elseif ($_SESSION['joinCharacterName'] === "White") {
                         $characterID = 6;
                     }
-                    $joinKey = $_POST['gameKeyJ'];
-                    $joinPlayerName = $_POST['playerNameJ'];
-                    $db = getDatabase();
+                    //Assigning the joining player game key to SESSION variable
+                    //Also assigning joining player name to SESSION variable
+                    //---------------------------------------------
+                    $_SESSION['joinKey'] = $_POST['gameKeyJ'];
+                    $_SESSION['joinPlayerName'] = $_POST['playerNameJ'];
+                    //---------------------------------------------                    
+                    
                     //SQL statements to join the created game session
                     //-----------------------------------------------
-                    $stmt1 = $db->prepare("INSERT INTO player(GameKey, CharacterId, PlayerName) VALUES('$joinKey', '$characterID', '$joinPlayerName')");
-                    $stmt2 = $db->prepare("SELECT PlayerId FROM player WHERE PlayerName = '$joinPlayerName'");
+                    $db = getDatabase();
+                    $stmt1 = $db->prepare("INSERT INTO player(GameKey, CharacterId, PlayerName) VALUES('{$_SESSION['joinKey']}', '$characterID', '{$_SESSION['joinPlayerName']}')");
+                    $stmt2 = $db->prepare("SELECT PlayerId FROM player WHERE PlayerName = '{$_SESSION['joinPlayerName']}'");
                     //----------------------------------------------
+                    
                     if ($stmt1->execute() > 0) {
                         if ($stmt2->execute() > 0) {
-                            $joinplayerID = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-                            $stmt3 = $db->prepare("UPDATE `characters` SET PlayerID = $joinplayerID WHERE CharcterID = $characterID");
+                            //if the two statements execute it means 
+                            //you joined the created session and
+                            //im assigning the joining player id to SESSION variable
+                            //then added that player id to the character chosen
+                            //------------------------------------------------------
+                            $result = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+                            foreach($result as $x){
+                                $_SESSION['joinplayerID'] = $x['PlayerId'];
+                            }
+                            $stmt3 = $db->prepare("UPDATE characters SET PlayerID = '{$_SESSION['joinplayerID']}' WHERE CharacterID = $characterID");
+                            //------------------------------------------------------
                             if ($stmt3->execute() > 0) {
                                 ?>
                                 <div style="width:200px; margin:auto;"><?php echo "Successfully joined game"; ?></div>
@@ -117,16 +139,37 @@
                             }
                         }
                     }
-
-
-                    //echo "<div style='width:200px; margin:auto;'>Please Join or Create a Game.</div>";
-                    //sleep(10);
-                    //header("Location: index.php");
                 }
+                //if the form was submitted then count get the
+                //current player count using the game key from the creator
+                //--------------------------------------------------------
                 $db = getDatabase();
-                $stmt = $db->prepare("SELECT COUNT(*) FROM `player` WHERE COALESCE(PlayerName) is not null and GameKey = $joinKey");
+                if (filter_input(INPUT_POST, 'action') === 'create') {
+                    $stmt = $db->prepare("SELECT COUNT(*) FROM `player` WHERE COALESCE(PlayerName) is not null AND GameKey = '{$_SESSION['gameKey']}'");
+                //--------------------------------------------------------    
+                }
+                //if the game is attempted to be joined then get the player count
+                //using the joining player key
+                //---------------------------------------------------------
+                elseif (filter_input(INPUT_POST, 'action') === 'join') {
+                    $stmt = $db->prepare("SELECT COUNT(*) FROM `player` WHERE COALESCE(PlayerName) is not null AND GameKey = '{$_SESSION['joinKey']}'");
+                }
+                //---------------------------------------------------------
+                
+                //If the statement to get player count executes then
+                //Depending on if the session is being created or joined
+                //were getting the expected players and the current players
+                //---------------------------------------------------------
                 if ($stmt->execute() > 0) {
-                    $stmt2 = $db->prepare("SELECT NumberOfPlayers from game WHERE GameKey = $joinKey");
+                    if (filter_input(INPUT_POST, 'action') === 'create') {
+                        $stmt2 = $db->prepare("SELECT NumberOfPlayers FROM game WHERE GameKey = '{$_SESSION['gameKey']}'");
+                    } elseif (filter_input(INPUT_POST, 'action') === 'join') {
+                        $stmt2 = $db->prepare("SELECT NumberOfPlayers FROM game WHERE GameKey = '{$_SESSION['joinKey']}'");
+                    }
+                //---------------------------------------------------------
+                
+                //Assining the current players and number of players to variables
+                //----------------------------------------------------------
                     if ($stmt2->execute() > 0) {
                         echo'POOP';
                         $currentResults = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -141,16 +184,25 @@
                         echo 'expected' . $expectedPlyrs;
                         echo 'current' . $currentPlyrs;
                     }
+                //----------------------------------------------------------
                 }
-                if ($currentPlyrs === $expectedPlyrs) {
-                    echo 'shit';
-                    //if the players expected is hit
-                    //this is where we innitialize the game
-                    include_once 'Initialization/Initalization.php';
-                    echo "<div style='width:200px; margin:auto;>Initializing Game</div>'";
-                    sleep(10);
-                    header("Location: gameboard.php");
+                //If the expected players is hit then put the 
+                //creator player id as the turn ID and then initialize
+                //----------------------------------------------------------
+                if ($expectedPlyrs === $currentPlyrs) {
+                    $_SESSION['mode'] = 'wait';
+                    $stmt = $db->prepare("INSERT INTO turn(TurnID, gameKey) VALUES('{$_SESSION['playerID']}', '{$_SESSION['gameKey']}')");
+                    if ($stmt->execute() > 0) {
+                        echo 'this is the creator id ' . $_SESSION['playerID'];
+                        echo 'this was very successful';
+                        //if the players expected is hit
+                        //this is where we innitialize the game
+                        include_once 'Initialization/Initalization.php';
+                        echo "<div style='width:200px; margin:auto;>Initializing Game</div>'";
+                        header("Location: gameboard.php");
+                    }
                 }
+                //-----------------------------------------------------------
                 ?>
 
                 <a href="gameboard.php">HARD LINK TO GAME BOARD</a>

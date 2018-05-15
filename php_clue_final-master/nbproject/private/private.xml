@@ -2,6 +2,17 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/xampp/htdocs/php_clue_final-master/Initialization/CreatePlayerHand.php</file>
+            <file>file:/C:/xampp/htdocs/php_clue_final-master/drawRooms.php</file>
+            <file>file:/C:/xampp/htdocs/php_clue_final-master/gameBoard.php</file>
+            <file>file:/C:/xampp/htdocs/php_clue_final-master/creategame.php</file>
+            <file>file:/C:/xampp/htdocs/php_clue_final-master/Initialization/CreateSolution.php</file>
+            <file>file:/C:/xampp/htdocs/php_clue_final-master/join.php</file>
+            <file>file:/C:/xampp/htdocs/php_clue_final-master/dbconnect.php</file>
+            <file>file:/C:/xampp/htdocs/php_clue_final-master/Initialization/Initalization.php</file>
+            <file>file:/C:/xampp/htdocs/php_clue_final-master/Initialization/ConnectDB.php</file>
+            <file>file:/C:/xampp/htdocs/php_clue_final-master/waiting.php</file>
+        </group>
     </open-files>
 </project-private>
