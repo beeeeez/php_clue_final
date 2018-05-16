@@ -28,10 +28,11 @@
                     //--------------------------------------------------------
                     $stmt = $db->prepare("INSERT INTO characters(CharacterID, CardID, CharacterColor, xCoord, YCoord, gameKey) VALUES (1, 1, 'Scarlet', 17, 1, '{$_SESSION['gameKey']}'), (2, 2, 'Plum', 1, 6, '{$_SESSION['gameKey']}'), (3, 3, 'Peacock', 1, 19, '{$_SESSION['gameKey']}'), (4, 4, 'Green', 10, 25, '{$_SESSION['gameKey']}'), (5, 5, 'Mustard', 24, 8, '{$_SESSION['gameKey']}'), (6, 6, 'White', 15, 25, '{$_SESSION['gameKey']}')");
                     if ($stmt->execute() > 0) {
-                        echo 'success';
-                        echo '<br/>';
+                        echo 'Successfully created session';
+                        echo '<br/>' . '<br/>';
                     } else {
                         echo'broken';
+                        echo '<br/>' . '<br/>';
                     }
                     //---------------------------------------------------------
                     //giving a characterID value to the chosen character by game creator
@@ -72,12 +73,15 @@
                                 $stmt4 = $db->prepare("UPDATE characters SET PlayerID = '{$_SESSION['PlayerID']}' WHERE CharacterID = $characterID");
                             } else {
                                 echo"Statement 3 of create game did not execute";
+                                echo '<br/>' . '<br/>';
                             }
                         } else {
                             echo"Statement 2 of create game did not execute";
+                            echo '<br/>' . '<br/>';
                         }
                     } else {
                         echo"Statement 1 of create game did not execute";
+                        echo '<br/>' . '<br/>';
                     }
                     if ($stmt4->execute() > 0) {
                         ?>
@@ -85,10 +89,8 @@
                         <?php
                     } else {
                         echo"Statement 4 of create game did not execute";
+                        echo '<br/>' . '<br/>';
                     }
-                    ?>
-                    <div style="width:170px; margin:auto;"><?php echo 'Game Key: ' . $_SESSION['gameKey']; ?></div>
-                    <?php
                 } elseif (filter_input(INPUT_POST, 'action') === 'join') {
                     //Assigning the joining player game key to SESSION variable
                     //Also assigning joining player name to SESSION variable
@@ -118,8 +120,12 @@
                         <input class="btn btn-primary" type="submit" name="selectCharacter1" value="Select Character">
                     </form>
                     <?php
-                }//end of the action join statement 
-
+                }//end of the action join statement
+                if (!empty($_SESSION['gameKey'])) {
+                    ?>
+                    <div style="width:170px; margin:auto;"><?php echo 'Game Key: ' . $_SESSION['gameKey']; ?></div>
+                    <?php
+                }
                 if (filter_input(INPUT_POST, 'selectCharacter1') === 'Select Character') {
                     $_SESSION['joinCharacterName'] = $_POST['selectCharacter'];
                     //giving a characterID value to the chosen character by joining user
@@ -193,7 +199,6 @@
                     //Assining the current players and number of players to variables
                     //----------------------------------------------------------
                     if ($stmt2->execute() > 0) {
-                        echo'POOP';
                         $currentResults = $stmt->fetch(PDO::FETCH_ASSOC);
                         $expectedResults = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                         foreach ($currentResults as $x):
@@ -204,6 +209,7 @@
                             $expectedPlyrs = $x['NumberOfPlayers'];
                         endforeach;
                         echo 'expected' . $expectedPlyrs;
+                        echo '<br/>' . '<br/>';
                         echo 'current' . $currentPlyrs;
                     }
                     //----------------------------------------------------------
@@ -224,14 +230,12 @@
                             echo 'this shit is broken';
                         }
                     }   //if the players expected is hit
-                        //this is where we innitialize the game
-                        include_once 'Initialization/Initalization.php';
-                        header("Location: gameBoard.php");                    
+                    //this is where we innitialize the game
+                    include_once 'Initialization/Initalization.php';
+                    header("Location: gameBoard.php");
                 }
                 //-----------------------------------------------------------
                 ?>
-
-                <a href="gameboard.php">HARD LINK TO GAME BOARD</a>
             </div>
         </div><!-- End of "wrapper div -->
 

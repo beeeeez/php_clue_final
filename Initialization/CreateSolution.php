@@ -4,7 +4,6 @@ include_once './ConnectDB.php';
 
 //Generate Solution
 //$gameKey = "1";
-$gameKey = $_SESSION["gameKey"];
 $murder = "";
 $murderWeapon = "";
 $murderLocation = "";
@@ -90,11 +89,18 @@ catch(PDOException $e)
                 //$conn = DBConnect();
                 // set the PDO error mode to exception
                 //$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                //echo "Connected successfully"; 
-                $stmt = $conn->prepare("INSERT INTO `gamesolution`(`GameKey`, `MurdererId`, `MurderWeaponId`, `MurderLocationId`) VALUES ('$gameKey','$murder','$murderWeapon', '$murderLocation')");
+                //echo "Connected successfully";
+                if(!empty($_SESSION['gameKey'])){
+                $stmt = $conn->prepare("INSERT INTO `gamesolution`(`GameKey`, `MurdererId`, `MurderWeaponId`, `MurderLocationId`) VALUES ('{$_SESSION['gameKey']}','$murder','$murderWeapon', '$murderLocation')");
                 //print_r($db);
                 //print_r($stmt);
                 $stmt->execute();
+                }elseif (!empty($_SESSION['joinKey'])){
+                $stmt = $conn->prepare("INSERT INTO `gamesolution`(`GameKey`, `MurdererId`, `MurderWeaponId`, `MurderLocationId`) VALUES ('{$_SESSION['joinKey']}','$murder','$murderWeapon', '$murderLocation')");
+                //print_r($db);
+                //print_r($stmt);
+                $stmt->execute(); 
+                }
             }
             catch(PDOException $e)
             {

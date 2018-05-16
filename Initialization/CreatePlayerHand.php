@@ -116,7 +116,7 @@ catch(PDOException $e)
         while($handcnt < $size){
             $cardId = $cards[$handcnt];
             $playerId = $players[$playercnt];
-            echo "PlayerId $playerId cardid $cardId";
+            //echo "PlayerId $playerId cardid $cardId";
                 echo("<br>");
          try {
 
@@ -129,11 +129,11 @@ catch(PDOException $e)
                 echo("<br>");
             }
             $playercnt++;
-            echo "Playercnt $playercnt Num Players $numberOfPlayers";
+            //echo "Playercnt $playercnt Num Players $numberOfPlayers";
                 echo("<br>");
             if($playercnt >= $numberOfPlayers){
                 $playercnt = 0;
-                echo"reset";
+                //echo"reset";
             }
             $handcnt++;
         }
