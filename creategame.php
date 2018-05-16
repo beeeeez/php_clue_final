@@ -25,6 +25,16 @@
                         <input type="text" name="playerNameC">
                         <br/>
                         <br/>
+                        <select name="characterName">
+                            <option value="Scarlet">Scarlet</option>
+                            <option value="Plum">Plum</option>
+                            <option value="Peacock">Peacock</option>
+                            <option value="Green">Green</option>
+                            <option value="Mustard">Mustard</option>
+                            <option value="White">White</option>        
+                        </select>
+                        <input type="hidden" name="action" value="chooseChar">
+                        <input type="hidden" name="action" value="create">
                         <input class="btn btn-primary" type="submit" name="createGame" value="Create Game">
                         <input type="hidden" value="<?php echo $tempKey ?>" name="gameKey">
                     </div>

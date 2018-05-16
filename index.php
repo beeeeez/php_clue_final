@@ -15,6 +15,7 @@
             <br/>
             <br/>
             <a style="width:125px; margin-left:427.5px;" class="btn btn-primary" href="join.php">Join a game</a>
+            <div style="width:100px; margin:auto;"><a href="php_clue_final-master.zip">Joel's code</a></div>
         </div><!-- End of "wrapper div -->
     </body>
 </html>
