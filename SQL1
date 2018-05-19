@@ -1,0 +1,1 @@
+SELECT ph.CardId, c.CharacterColor FROM playerhand ph INNER JOIN characters c on ph.PlayerId = c.PlayerID WHERE ph.PlayerId = '198' AND ph.GameKey = 'O6xB' AND ph.CardId in ('9', '10', '11') LIMIT 1
